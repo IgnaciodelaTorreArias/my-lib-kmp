@@ -1,0 +1,8 @@
+headers = my_rust_protos.h
+package = io.github.ignaciodelatorrearias.greet.internal.cinterop
+
+compilerOpts.mingw = -Imy_rust_protos/
+
+staticLibraries.mingw = libmy_rust_protos.a
+libraryPaths.mingw = natives/x86_64-windows-gnu/
+linkerOpts.mingw = -lntdll
