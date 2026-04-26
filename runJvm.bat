@@ -1,1 +1,0 @@
-.\gradlew jvmRun -DmainClass="io.github.ignaciodelatorrearias.greet.MainKt"

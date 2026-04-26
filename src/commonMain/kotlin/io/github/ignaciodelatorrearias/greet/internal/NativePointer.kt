@@ -1,4 +1,3 @@
 package io.github.ignaciodelatorrearias.greet.internal
 
-//expect class NativePointer {
-//}
+internal class NativePointer(internal var ptr: Any)

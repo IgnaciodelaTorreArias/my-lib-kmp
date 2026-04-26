@@ -1,0 +1,81 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+      my_rust_protos_version:
+        required: true
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    runs-on: macos-latest
+    env:
+      RUST_RUNTIMES: "aarch64-darwin aarch64-linux-gnu aarch64-windows x86_64-darwin x86_64-linux-gnu x86_64-windows x86_64-windows-gnu"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ref: v${{ inputs.version }}
+      - name: Setup Java 24 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
+          cache: gradle
+      - name: cache konan
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+      - name: download binaries
+        run: |
+          read -a rust_runtimes <<< "${{ env.RUST_RUNTIMES }}"
+          for runtime in "${rust_runtimes[@]}"
+          do
+              mkdir -p ./natives/${runtime}
+              curl -L "https://github.com/IgnaciodelaTorreArias/my_rust_protos/releases/download/v${{ inputs.my_rust_protos_version }}/${runtime}.tar.gz" |
+              tar -xzf - -C ./natives/${runtime}
+          done
+          mkdir -p src/jvmMain/resources/jne/macos/aarch64 && cp ./natives/aarch64-darwin/libmy_rust_protos.dylib src/jvmMain/resources/jne/macos/aarch64
+          mkdir -p src/jvmMain/resources/jne/linux/aarch64 && cp ./natives/aarch64-linux-gnu/libmy_rust_protos.so src/jvmMain/resources/jne/linux/aarch64
+          mkdir -p src/jvmMain/resources/jne/windows/aarch64 && cp ./natives/aarch64-windows/my_rust_protos.dll src/jvmMain/resources/jne/windows/aarch64
+          mkdir -p src/jvmMain/resources/jne/macos/x86_64 && cp ./natives/x86_64-darwin/libmy_rust_protos.dylib src/jvmMain/resources/jne/macos/x86_64
+          mkdir -p src/jvmMain/resources/jne/linux/x86_64 && cp ./natives/x86_64-linux-gnu/libmy_rust_protos.so src/jvmMain/resources/jne/linux/x86_64
+          mkdir -p src/jvmMain/resources/jne/windows/x86_64 && cp ./natives/x86_64-windows/my_rust_protos.dll src/jvmMain/resources/jne/windows/x86_64
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
+      - run: |
+          mkdir -p output
+          for runtime in build/bin/*; do
+            name=$(basename "$runtime")
+            base_dir="${runtime}/releaseExecutable"
+            if [ -f "${base_dir}/greet.exe" ]; then
+              ext="exe"
+            elif [ -f "${base_dir}/greet.kexe" ]; then
+              ext="kexe"
+            else
+              continue
+            fi
+            cp "${base_dir}/greet.${ext}" "output/${name}.${ext}"
+          done
+          cp build/libs/greet-${{ inputs.version }}-all.jar output/
+      - name: upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: output/*
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ inputs.version }}
+          tag_name: v${{ inputs.version }}
+          draft: false
+          files: |
+            output/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

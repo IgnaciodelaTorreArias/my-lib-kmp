@@ -1,8 +1,13 @@
 headers = my_rust_protos.h
 package = io.github.ignaciodelatorrearias.greet.internal.cinterop
 
-compilerOpts.mingw = -Imy_rust_protos/
+compilerOpts = -Imy_rust_protos/
 
-staticLibraries.mingw = libmy_rust_protos.a
+staticLibraries = libmy_rust_protos.a
 libraryPaths.mingw = natives/x86_64-windows-gnu/
 linkerOpts.mingw = -lntdll
+libraryPaths.linux_x64 = natives/x86_64-linux-gnu/
+libraryPaths.linux_arm64 = natives/aarch64-linux-gnu/
+libraryPaths.osx = natives/aarch64-darwin/
+---
+struct Person{};

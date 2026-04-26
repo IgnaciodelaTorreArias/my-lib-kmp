@@ -1,0 +1,1 @@
+jextract --output .\src\jvmMain\java -t io.github.ignaciodelatorrearias.greet.internal -l my_rust_protos .\my_rust_protos\my_rust_protos.h
