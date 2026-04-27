@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.ignaciodelatorrearias"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -21,11 +21,6 @@ wire {
     kotlin {}
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(22))
-    }
-}
 kotlin {
     jvm {
         compilerOptions {

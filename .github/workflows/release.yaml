@@ -19,11 +19,11 @@ jobs:
         with:
           submodules: recursive
           ref: v${{ inputs.version }}
-      - name: Setup Java 24 (Temurin)
+      - name: Setup Java 22 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '24'
+          java-version: '22'
           cache: gradle
       - name: cache konan
         uses: actions/cache@v4
