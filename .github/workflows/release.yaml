@@ -6,8 +6,6 @@ on:
         required: true
       my_rust_protos_version:
         required: true
-permissions:
-  contents: write
 
 jobs:
   pack:
@@ -19,11 +17,11 @@ jobs:
         with:
           submodules: recursive
           ref: v${{ inputs.version }}
-      - name: Setup Java 22 (Temurin)
+      - name: Setup Java 24 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '22'
+          java-version: '24'
           cache: gradle
       - name: cache konan
         uses: actions/cache@v4
@@ -48,34 +46,4 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew build
-      - run: |
-          mkdir -p output
-          for runtime in build/bin/*; do
-            name=$(basename "$runtime")
-            base_dir="${runtime}/releaseExecutable"
-            if [ -f "${base_dir}/greet.exe" ]; then
-              ext="exe"
-            elif [ -f "${base_dir}/greet.kexe" ]; then
-              ext="kexe"
-            else
-              continue
-            fi
-            cp "${base_dir}/greet.${ext}" "output/${name}.${ext}"
-          done
-          cp build/libs/greet-${{ inputs.version }}-all.jar output/
-      - name: upload binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: binaries
-          path: output/*
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release v${{ inputs.version }}
-          tag_name: v${{ inputs.version }}
-          draft: false
-          files: |
-            output/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishToMavenCentral

@@ -1,14 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "2.3.20"
-    id("com.gradleup.shadow") version "9.4.1"
     id("com.squareup.wire") version "6.2.0"
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "io.github.ignaciodelatorrearias"
-version = "1.0.1-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -22,11 +23,7 @@ wire {
 }
 
 kotlin {
-    jvm {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_22)
-        }
-    }
+    jvm ()
     mingwX64()
     linuxX64()
     linuxArm64()
@@ -38,11 +35,6 @@ kotlin {
                 val MyRustProtos by creating {
                     definitionFile.set(project.file("src/nativeInterop/cinterop/libmy_rust_protos.def"))
                 }
-            }
-        }
-        binaries {
-            executable {
-                entryPoint = "io.github.ignaciodelatorrearias.greet.main"
             }
         }
     }
@@ -59,8 +51,41 @@ kotlin {
         }
     }
 }
-tasks.named<Jar>("shadowJar") {
-    manifest {
-        attributes["Main-Class"] = "io.github.ignaciodelatorrearias.greet.MainKt"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_22
     }
+}
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 22
+}
+mavenPublishing {
+    publishToMavenCentral()
+    coordinates("io.github.ignaciodelatorrearias", "greet", "1.0.2-SNAPSHOT")
+    pom {
+        name.set("Greet Multiplatform Library")
+        description.set("A library for testing FFI with kotlin multiplatform")
+        inceptionYear.set("2026")
+        url.set("https://github.com/IgnaciodelaTorreArias/my-lib-kmp/")
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("IgnaciodelaTorreArias")
+                name.set("Ignacio de la Torre Arias")
+                url.set("https://github.com/IgnaciodelaTorreArias/")
+            }
+        }
+        scm {
+            url.set("https://github.com/IgnaciodelaTorreArias/my-lib-kmp/")
+            connection.set("scm:git:git://github.com/IgnaciodelaTorreArias/my-lib-kmp.git")
+            developerConnection.set("scm:git:ssh://git@github.com/IgnaciodelaTorreArias/my-lib-kmp.git")
+        }
+    }
+    signAllPublications()
 }
