@@ -3,7 +3,8 @@ package io.github.ignaciodelatorrearias.greet.internal
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
 import io.github.ignaciodelatorrearias.greet.internal.my_rust_protos_h.lib_greet_free_buffer
-import io.github.ignaciodelatorrearias.lib.greet.v1.*
+import io.github.ignaciodelatorrearias.greet.types.CallStatus
+import io.github.ignaciodelatorrearias.greet.types.Error
 import java.lang.foreign.*
 
 internal fun throwErrors(status: Int, outPtr: MemorySegment, outLen: Long) {

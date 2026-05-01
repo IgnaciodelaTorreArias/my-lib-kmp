@@ -1,7 +1,7 @@
 package io.github.ignaciodelatorrearias.greet.internal
 
-import io.github.ignaciodelatorrearias.lib.greet.v1.PersonParams
-import io.github.ignaciodelatorrearias.lib.greet.v1.Response
+import io.github.ignaciodelatorrearias.greet.types.PersonParams
+import io.github.ignaciodelatorrearias.greet.types.Response
 import com.fizzed.jne.JNE
 import java.lang.foreign.MemorySegment
 

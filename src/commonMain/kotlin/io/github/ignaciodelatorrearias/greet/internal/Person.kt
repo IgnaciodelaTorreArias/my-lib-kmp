@@ -1,9 +1,7 @@
 package io.github.ignaciodelatorrearias.greet.internal
 
-//import io.github.ignaciodelatorrearias.greet.internal.NativePointer
-
-import io.github.ignaciodelatorrearias.lib.greet.v1.PersonParams
-import io.github.ignaciodelatorrearias.lib.greet.v1.Response
+import io.github.ignaciodelatorrearias.greet.types.PersonParams
+import io.github.ignaciodelatorrearias.greet.types.Response
 
 internal expect fun greet(p: PersonParams): Response;
 internal expect fun createNewPerson(p: PersonParams): NativePointer;

@@ -3,8 +3,8 @@ package io.github.ignaciodelatorrearias.greet.internal
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
 import io.github.ignaciodelatorrearias.greet.internal.cinterop.*
-import io.github.ignaciodelatorrearias.lib.greet.v1.CallStatus
-import io.github.ignaciodelatorrearias.lib.greet.v1.Error
+import io.github.ignaciodelatorrearias.greet.types.CallStatus
+import io.github.ignaciodelatorrearias.greet.types.Error
 import kotlinx.cinterop.*
 import platform.posix.*
 

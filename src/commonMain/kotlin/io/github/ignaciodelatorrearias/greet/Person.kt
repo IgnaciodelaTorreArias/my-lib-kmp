@@ -4,7 +4,7 @@ import io.github.ignaciodelatorrearias.greet.internal.NativePointer
 import io.github.ignaciodelatorrearias.greet.internal.createNewPerson
 import io.github.ignaciodelatorrearias.greet.internal.freePerson
 import io.github.ignaciodelatorrearias.greet.internal.personGreet
-import io.github.ignaciodelatorrearias.lib.greet.v1.PersonParams
+import io.github.ignaciodelatorrearias.greet.types.PersonParams
 
 class Person(val name: String, val age: Int): AutoCloseable {
     internal val ptr: NativePointer = createNewPerson(PersonParams(name, age))
