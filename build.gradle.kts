@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.ignaciodelatorrearias"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -61,7 +61,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 mavenPublishing {
     publishToMavenCentral()
-    coordinates("io.github.ignaciodelatorrearias", "greet", "1.0.2-SNAPSHOT")
+    coordinates("io.github.ignaciodelatorrearias", "greet", "1.0.4")
     pom {
         name.set("Greet Multiplatform Library")
         description.set("A library for testing FFI with kotlin multiplatform")
